@@ -1,0 +1,2 @@
+-- EQWatch Database Schema
+-- TODO: Define tables for users, regions, earthquakes, alerts, and any join tables

@@ -1,0 +1,2 @@
+-- EQWatch Common Queries
+-- TODO: Add frequently used queries here for reference
