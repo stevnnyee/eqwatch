@@ -19,10 +19,13 @@ app.include_router(alerts.router, prefix="/alerts", tags=["alerts"])
 app.include_router(data_sources.router, prefix="/data-sources", tags=["data_sources"])
 app.include_router(region_types.router, prefix="/region-types", tags=["region_types"])
 app.include_router(user_regions.router, prefix="/user-regions", tags=["user_regions"])
-app.include_router(notification_preferences.router, prefix="/notification-preferences", tags=["notification_preferences"])
+app.include_router(
+    notification_preferences.router,
+    prefix="/notification-preferences",
+    tags=["notification_preferences"],
+)
 
 
 @app.get("/")
 def root():
     return {"message": "EQWatch API is running"}
-

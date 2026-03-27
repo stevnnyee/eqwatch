@@ -6,5 +6,4 @@ pydantic
 pydantic-settings
 email-validator
 python-multipart
-requests
 ruff
