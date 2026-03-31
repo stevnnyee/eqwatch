@@ -14,21 +14,11 @@ class RegionCreate(BaseModel):
     max_lat: float
     min_lon: float
     max_lon: float
-    type_id: int
 
 
 class AlertCreate(BaseModel):
     user_id: int
     eq_id: int
-
-
-class DataSourceCreate(BaseModel):
-    name: str
-    url: str
-
-
-class RegionTypeCreate(BaseModel):
-    type_name: str
 
 
 class UserRegionCreate(BaseModel):
