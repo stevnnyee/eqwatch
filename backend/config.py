@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     db_password: str
     db_name: str = "earthquakes"
 
-    model_config = {"env_file": os.path.join(os.path.dirname(__file__), "..", ".env")}            
+    model_config = {"env_file": os.path.join(os.path.dirname(__file__), "..", ".env")}
 
 
 settings = Settings()
