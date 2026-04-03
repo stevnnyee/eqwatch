@@ -1,3 +1,4 @@
+import os
 from pydantic_settings import BaseSettings
 
 
@@ -7,7 +8,7 @@ class Settings(BaseSettings):
     db_password: str
     db_name: str = "earthquakes"
 
-    model_config = {"env_file": ".env"}
+    model_config = {"env_file": os.path.join(os.path.dirname(__file__), "..", ".env")}            
 
 
 settings = Settings()
