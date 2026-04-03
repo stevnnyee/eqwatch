@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS Alerts (
     user_id     INT NOT NULL,
     eq_id       INT NOT NULL,
     sent_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, eq_id),
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (eq_id)   REFERENCES Earthquakes(eq_id) ON DELETE CASCADE
 );
