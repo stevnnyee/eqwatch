@@ -12,7 +12,7 @@ CREATE TABLE users (
 CREATE TABLE earthquakes (
     eq_id           INT AUTO_INCREMENT PRIMARY KEY,
     magnitude       DECIMAL(4, 2) NOT NULL CHECK (magnitude BETWEEN -2 AND 10),
-    depth           DECIMAL(7, 3) NOT NULL CHECK (depth >= 0),
+    depth           DECIMAL(7, 3) NOT NULL,
     latitude        DECIMAL(9, 6) NOT NULL CHECK (latitude BETWEEN -90 AND 90),
     longitude       DECIMAL(9, 6) NOT NULL CHECK (longitude BETWEEN -180 AND 180),
     location_name   VARCHAR(255),
