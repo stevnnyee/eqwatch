@@ -1,6 +1,7 @@
 -- EQWatch Database Schema
+-- run: mysql -u <user> -p eqwatch < database/schema.sql from the repo root
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     user_id     INT AUTO_INCREMENT PRIMARY KEY,
     first_name  VARCHAR(100) NOT NULL,
     last_name   VARCHAR(100) NOT NULL,
@@ -9,7 +10,7 @@ CREATE TABLE users (
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE earthquakes (
+CREATE TABLE IF NOT EXISTS earthquakes (
     eq_id           INT AUTO_INCREMENT PRIMARY KEY,
     magnitude       DECIMAL(4, 2) NOT NULL CHECK (magnitude BETWEEN -2 AND 10),
     depth           DECIMAL(7, 3) NOT NULL,
@@ -21,7 +22,7 @@ CREATE TABLE earthquakes (
     INDEX idx_occurred_at (occurred_at)
 );
 
-CREATE TABLE regions (
+CREATE TABLE IF NOT EXISTS regions (
     region_id   INT AUTO_INCREMENT PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
     min_lat     DECIMAL(9, 6) NOT NULL,
@@ -32,7 +33,7 @@ CREATE TABLE regions (
     CHECK (min_lon < max_lon)
 );
 
-CREATE TABLE user_regions (
+CREATE TABLE IF NOT EXISTS user_regions (
     user_id     INT NOT NULL,
     region_id   INT NOT NULL,
     PRIMARY KEY (user_id, region_id),
@@ -40,7 +41,7 @@ CREATE TABLE user_regions (
     FOREIGN KEY (region_id) REFERENCES regions(region_id) ON DELETE CASCADE
 );
 
-CREATE TABLE notification_preferences (
+CREATE TABLE IF NOT EXISTS notification_preferences (
     pref_id         INT AUTO_INCREMENT PRIMARY KEY,
     user_id         INT NOT NULL,
     min_magnitude   DECIMAL(4, 2) NOT NULL CHECK (min_magnitude BETWEEN -2 AND 10),
@@ -48,11 +49,12 @@ CREATE TABLE notification_preferences (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE alerts (
+CREATE TABLE IF NOT EXISTS alerts (
     alert_id    INT AUTO_INCREMENT PRIMARY KEY,
     user_id     INT NOT NULL,
     eq_id       INT NOT NULL,
     sent_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (eq_id)   REFERENCES earthquakes(eq_id) ON DELETE CASCADE
+    UNIQUE KEY uq_user_eq (user_id, eq_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)       ON DELETE CASCADE,
+    FOREIGN KEY (eq_id)   REFERENCES earthquakes(eq_id)   ON DELETE CASCADE
 );

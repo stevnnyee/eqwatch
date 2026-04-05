@@ -8,6 +8,9 @@ from routers import (
     notification_preferences,
 )
 
+# Run: python -m uvicorn main:app --reload from backend directory
+# use python -m if using a virtual enviorment
+
 app = FastAPI(title="EQWatch API")
 
 app.include_router(users.router, prefix="/users", tags=["users"])
