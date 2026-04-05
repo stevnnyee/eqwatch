@@ -15,7 +15,7 @@ def insert_earthquake(eq: dict) -> int:
         cursor.execute(
             """
             INSERT INTO earthquakes (
-                magnitude, depth, latitude, longitude, location_name, `timestamp`
+                magnitude, depth, latitude, longitude, location_name, occurred_at
             ) VALUES (%s, %s, %s, %s, %s, %s)
             """,
             (
@@ -24,7 +24,7 @@ def insert_earthquake(eq: dict) -> int:
                 eq["latitude"],
                 eq["longitude"],
                 eq["location_name"],
-                eq["timestamp"],
+                eq["occurred_at"],
             ),
         )
         conn.commit()

@@ -64,7 +64,7 @@ def _feature_to_row(feature: dict) -> dict | None:
         "latitude": lat,
         "longitude": lon,
         "location_name": place[:255],
-        "timestamp": occurred,
+        "occurred_at": occurred,
     }
 
 
