@@ -1,6 +1,10 @@
 -- EQWatch Common Queries
 -- Format: each query is preceded by "-- name: <query_name>" to allow loading by name.
 
+-- =============================================================================
+-- CRUD Queries
+-- =============================================================================
+
 -- name: get_all_users
 -- services/users.py, get_all_users()
 SELECT user_id, first_name, last_name, email, created_at
@@ -106,3 +110,75 @@ VALUES (%s, %s, %s);
 -- services/notification_preferences.py, delete_preference()
 DELETE FROM notification_preferences
 WHERE pref_id = %s;
+
+-- =============================================================================
+-- Analytical Queries
+-- =============================================================================
+
+-- name: get_earthquakes_in_region
+-- All earthquakes whose coordinates fall within a region's bounding box.
+-- Params: region_id
+SELECT e.eq_id, e.magnitude, e.depth, e.latitude, e.longitude, e.location_name, e.occurred_at,
+       r.name AS region_name
+FROM earthquakes e
+JOIN regions r
+  ON e.latitude  BETWEEN r.min_lat AND r.max_lat
+ AND e.longitude BETWEEN r.min_lon AND r.max_lon
+WHERE r.region_id = %s
+ORDER BY e.occurred_at DESC;
+
+-- name: get_users_to_alert
+-- Users who watch a region containing the given earthquake AND have a
+-- min_magnitude preference at or below the earthquake's magnitude.
+-- Params: eq_id
+SELECT DISTINCT u.user_id, u.email, u.first_name, u.last_name,
+       np.min_magnitude, np.notify_email, r.name AS region_name
+FROM earthquakes e
+JOIN regions r
+  ON e.latitude  BETWEEN r.min_lat AND r.max_lat
+ AND e.longitude BETWEEN r.min_lon AND r.max_lon
+JOIN user_regions ur ON r.region_id = ur.region_id
+JOIN users u         ON ur.user_id = u.user_id
+JOIN notification_preferences np ON u.user_id = np.user_id
+WHERE e.eq_id = %s
+  AND np.min_magnitude <= e.magnitude;
+
+-- name: get_alert_history_for_user
+-- Full alert history for a user, with earthquake details.
+-- Params: user_id
+SELECT a.alert_id, a.sent_at,
+       e.eq_id, e.magnitude, e.depth, e.location_name, e.occurred_at
+FROM alerts a
+JOIN earthquakes e ON a.eq_id = e.eq_id
+WHERE a.user_id = %s
+ORDER BY a.sent_at DESC;
+
+-- name: get_magnitude_distribution
+-- Count of earthquakes grouped into 1-unit magnitude buckets.
+SELECT FLOOR(magnitude) AS magnitude_bucket,
+       COUNT(*) AS earthquake_count
+FROM earthquakes
+GROUP BY FLOOR(magnitude)
+ORDER BY magnitude_bucket;
+
+-- name: get_top_regions_by_activity
+-- Regions ranked by how many earthquakes fall within their bounding box.
+SELECT r.region_id, r.name,
+       COUNT(e.eq_id) AS earthquake_count
+FROM regions r
+LEFT JOIN earthquakes e
+  ON e.latitude  BETWEEN r.min_lat AND r.max_lat
+ AND e.longitude BETWEEN r.min_lon AND r.max_lon
+GROUP BY r.region_id, r.name
+ORDER BY earthquake_count DESC;
+
+-- name: get_user_activity_summary
+-- Per-user count of watched regions and alerts received.
+SELECT u.user_id, u.first_name, u.last_name, u.email,
+       COUNT(DISTINCT ur.region_id) AS watched_regions,
+       COUNT(DISTINCT a.alert_id)   AS alerts_received
+FROM users u
+LEFT JOIN user_regions ur ON u.user_id = ur.user_id
+LEFT JOIN alerts a        ON u.user_id = a.user_id
+GROUP BY u.user_id, u.first_name, u.last_name, u.email
+ORDER BY alerts_received DESC;

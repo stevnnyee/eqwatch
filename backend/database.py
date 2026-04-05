@@ -9,7 +9,7 @@ _queries: dict[str, str] = {}
 
 
 def _load_queries():
-    '''Build dictionary mapping of query names to SQL strings'''
+    """Build dictionary mapping of query names to SQL strings"""
     with open(_QUERIES_PATH, "r") as f:
         content = f.read()
     blocks = re.split(r"--\s*name:\s*(\w+)", content)
@@ -17,7 +17,11 @@ def _load_queries():
     for i in range(1, len(blocks) - 1, 2):
         name = blocks[i].strip()
         # Strip comment lines from body, keep the SQL statement
-        lines = [l for l in blocks[i + 1].splitlines() if not l.strip().startswith("--")]
+        lines = [
+            line
+            for line in blocks[i + 1].splitlines()
+            if not line.strip().startswith("--")
+        ]
         _queries[name] = "\n".join(lines).strip()
 
 
@@ -25,7 +29,7 @@ _load_queries()
 
 
 def query(name: str) -> str:
-    '''Map query names to SQL statements'''
+    """Map query names to SQL statements"""
     return _queries[name]
 
 
