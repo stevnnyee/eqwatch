@@ -1,8 +1,7 @@
 -- EQWatch Database Schema
--- TODO: Define tables for users, regions, earthquakes, alerts, and any join tables
--- run mysql -u <user> -p earthquakes < database/schema.sql from eqwatch directory
+-- run: mysql -u <user> -p eqwatch < database/schema.sql from the repo root
 
-CREATE TABLE IF NOT EXISTS Users (
+CREATE TABLE IF NOT EXISTS users (
     user_id     INT AUTO_INCREMENT PRIMARY KEY,
     first_name  VARCHAR(100) NOT NULL,
     last_name   VARCHAR(100) NOT NULL,
@@ -11,10 +10,10 @@ CREATE TABLE IF NOT EXISTS Users (
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS Earthquakes (
+CREATE TABLE IF NOT EXISTS earthquakes (
     eq_id           INT AUTO_INCREMENT PRIMARY KEY,
     magnitude       DECIMAL(4, 2) NOT NULL CHECK (magnitude BETWEEN -2 AND 10),
-    depth           DECIMAL(7, 3) NOT NULL CHECK (depth >= 0),
+    depth           DECIMAL(7, 3) NOT NULL,
     latitude        DECIMAL(9, 6) NOT NULL CHECK (latitude BETWEEN -90 AND 90),
     longitude       DECIMAL(9, 6) NOT NULL CHECK (longitude BETWEEN -180 AND 180),
     location_name   VARCHAR(255),
@@ -23,7 +22,7 @@ CREATE TABLE IF NOT EXISTS Earthquakes (
     INDEX idx_occurred_at (occurred_at)
 );
 
-CREATE TABLE IF NOT EXISTS Regions (
+CREATE TABLE IF NOT EXISTS regions (
     region_id   INT AUTO_INCREMENT PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
     min_lat     DECIMAL(9, 6) NOT NULL,
@@ -34,28 +33,28 @@ CREATE TABLE IF NOT EXISTS Regions (
     CHECK (min_lon < max_lon)
 );
 
-CREATE TABLE IF NOT EXISTS UserRegions (
+CREATE TABLE IF NOT EXISTS user_regions (
     user_id     INT NOT NULL,
     region_id   INT NOT NULL,
     PRIMARY KEY (user_id, region_id),
-    FOREIGN KEY (user_id)   REFERENCES Users(user_id)   ON DELETE CASCADE,
-    FOREIGN KEY (region_id) REFERENCES Regions(region_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id)   REFERENCES users(user_id)   ON DELETE CASCADE,
+    FOREIGN KEY (region_id) REFERENCES regions(region_id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS NotificationPreferences (
+CREATE TABLE IF NOT EXISTS notification_preferences (
     pref_id         INT AUTO_INCREMENT PRIMARY KEY,
     user_id         INT NOT NULL,
     min_magnitude   DECIMAL(4, 2) NOT NULL CHECK (min_magnitude BETWEEN -2 AND 10),
     notify_email    BOOLEAN NOT NULL DEFAULT FALSE,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS Alerts (
+CREATE TABLE IF NOT EXISTS alerts (
     alert_id    INT AUTO_INCREMENT PRIMARY KEY,
     user_id     INT NOT NULL,
     eq_id       INT NOT NULL,
     sent_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id, eq_id),
-    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (eq_id)   REFERENCES Earthquakes(eq_id) ON DELETE CASCADE
+    UNIQUE KEY uq_user_eq (user_id, eq_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)       ON DELETE CASCADE,
+    FOREIGN KEY (eq_id)   REFERENCES earthquakes(eq_id)   ON DELETE CASCADE
 );
