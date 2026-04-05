@@ -1,6 +1,6 @@
 -- EQWatch Database Schema
 
-CREATE TABLE Users (
+CREATE TABLE users (
     user_id     INT AUTO_INCREMENT PRIMARY KEY,
     first_name  VARCHAR(100) NOT NULL,
     last_name   VARCHAR(100) NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE Users (
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE Earthquakes (
+CREATE TABLE earthquakes (
     eq_id           INT AUTO_INCREMENT PRIMARY KEY,
     magnitude       DECIMAL(4, 2) NOT NULL CHECK (magnitude BETWEEN -2 AND 10),
     depth           DECIMAL(7, 3) NOT NULL CHECK (depth >= 0),
@@ -21,7 +21,7 @@ CREATE TABLE Earthquakes (
     INDEX idx_occurred_at (occurred_at)
 );
 
-CREATE TABLE Regions (
+CREATE TABLE regions (
     region_id   INT AUTO_INCREMENT PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
     min_lat     DECIMAL(9, 6) NOT NULL,
@@ -32,27 +32,27 @@ CREATE TABLE Regions (
     CHECK (min_lon < max_lon)
 );
 
-CREATE TABLE UserRegions (
+CREATE TABLE user_regions (
     user_id     INT NOT NULL,
     region_id   INT NOT NULL,
     PRIMARY KEY (user_id, region_id),
-    FOREIGN KEY (user_id)   REFERENCES Users(user_id)   ON DELETE CASCADE,
-    FOREIGN KEY (region_id) REFERENCES Regions(region_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id)   REFERENCES users(user_id)   ON DELETE CASCADE,
+    FOREIGN KEY (region_id) REFERENCES regions(region_id) ON DELETE CASCADE
 );
 
-CREATE TABLE NotificationPreferences (
+CREATE TABLE notification_preferences (
     pref_id         INT AUTO_INCREMENT PRIMARY KEY,
     user_id         INT NOT NULL,
     min_magnitude   DECIMAL(4, 2) NOT NULL CHECK (min_magnitude BETWEEN -2 AND 10),
     notify_email    BOOLEAN NOT NULL DEFAULT FALSE,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
-CREATE TABLE Alerts (
+CREATE TABLE alerts (
     alert_id    INT AUTO_INCREMENT PRIMARY KEY,
     user_id     INT NOT NULL,
     eq_id       INT NOT NULL,
     sent_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (eq_id)   REFERENCES Earthquakes(eq_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (eq_id)   REFERENCES earthquakes(eq_id) ON DELETE CASCADE
 );
