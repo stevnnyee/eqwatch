@@ -6,108 +6,108 @@
 -- =============================================================================
 
 -- name: get_all_users
--- services/users.py, get_all_users()
+-- Retrieve all users.
 SELECT user_id, first_name, last_name, email, created_at
 FROM users;
 
 -- name: get_user
--- services/users.py, get_user()
+-- Retrieve a single user.
 SELECT user_id, first_name, last_name, email, created_at
 FROM users
 WHERE user_id = %s;
 
 -- name: create_user
--- services/users.py, create_user()
+-- Insert a new user.
 INSERT INTO users (first_name, last_name, email, password)
 VALUES (%s, %s, %s, %s);
 
 -- name: delete_user
--- services/users.py, delete_user()
+-- Delete an existing user.
 DELETE FROM users
 WHERE user_id = %s;
 
 -- name: get_regions_for_user
--- services/user_regions.py, get_regions_for_user()
+-- Retrieve a list of associated regions for a user.
 SELECT r.region_id, r.name, r.min_lat, r.max_lat, r.min_lon, r.max_lon
 FROM regions r
 JOIN user_regions ur ON r.region_id = ur.region_id
 WHERE ur.user_id = %s;
 
 -- name: add_user_region
--- services/user_regions.py, add_user_region()
+-- Add a region of interest for user_id.
 INSERT INTO user_regions (user_id, region_id)
 VALUES (%s, %s);
 
 -- name: remove_user_region
--- services/user_regions.py, remove_user_region()
+-- Remove a region of interest for user_id.
 DELETE FROM user_regions
 WHERE user_id = %s AND region_id = %s;
 
 -- name: get_all_regions
--- services/regions.py, get_all_regions()
+-- Retrieve all regions.
 SELECT region_id, name, min_lat, max_lat, min_lon, max_lon
 FROM regions;
 
 -- name: get_region
--- services/regions.py, get_region()
+-- Get a region via the region_id.
 SELECT region_id, name, min_lat, max_lat, min_lon, max_lon
 FROM regions
 WHERE region_id = %s;
 
 -- name: create_region
--- services/regions.py, create_region()
+-- Create a new region.
 INSERT INTO regions (name, min_lat, max_lat, min_lon, max_lon)
 VALUES (%s, %s, %s, %s, %s);
 
 -- name: delete_region
--- services/regions.py, delete_region()
+-- Delete a region.
 DELETE FROM regions
 WHERE region_id = %s;
 
 -- name: get_all_earthquakes
--- services/earthquakes.py, get_all_earthquakes()
+-- Retrieve all recorded earthquakes.
 SELECT eq_id, magnitude, depth, latitude, longitude, location_name, occurred_at
 FROM earthquakes;
 
 -- name: get_earthquake
--- services/earthquakes.py, get_earthquake()
+-- Get a specific earthquake via the eq_id.
 SELECT eq_id, magnitude, depth, latitude, longitude, location_name, occurred_at
 FROM earthquakes
 WHERE eq_id = %s;
 
 -- name: insert_earthquake
--- services/earthquakes.py, insert_earthquake()
+-- Insert a new earthquake.
 INSERT INTO earthquakes (magnitude, depth, latitude, longitude, location_name, occurred_at)
 VALUES (%s, %s, %s, %s, %s, %s);
 
 -- name: get_all_alerts
--- services/alerts.py, get_all_alerts()
+-- Retrieve all the alerts (alert ID, user, earthquake, timestamp).
 SELECT alert_id, user_id, eq_id, sent_at
 FROM alerts;
 
 -- name: create_alert
--- services/alerts.py, create_alert()
+-- Create a new alert for a user about an earthquake.
 INSERT INTO alerts (user_id, eq_id)
 VALUES (%s, %s);
 
 -- name: delete_alert
--- services/alerts.py, delete_alert()
+-- Delete an alert via the alert_id.
 DELETE FROM alerts
 WHERE alert_id = %s;
 
 -- name: get_preferences_for_user
--- services/notification_preferences.py, get_preferences_for_user()
+-- Get notification preferences for all users.
 SELECT pref_id, user_id, min_magnitude, notify_email
 FROM notification_preferences
 WHERE user_id = %s;
 
 -- name: create_preference
--- services/notification_preferences.py, create_preference()
+-- Create a notification preference for a user, with minimum magnitute, and email to notify.
 INSERT INTO notification_preferences (user_id, min_magnitude, notify_email)
 VALUES (%s, %s, %s);
 
 -- name: delete_preference
--- services/notification_preferences.py, delete_preference()
+-- Delete notification preference via pref_id.
 DELETE FROM notification_preferences
 WHERE pref_id = %s;
 
