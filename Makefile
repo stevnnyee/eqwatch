@@ -1,4 +1,4 @@
-.PHONY: db db-down db-reset backend install seed lint help
+.PHONY: db db-down db-reset backend frontend eqwatch install seed lint help
 
 # Prefer python3 when available (typical on macOS/Homebrew); otherwise `python`.
 # Override anytime: make seed PYTHON=python
@@ -16,6 +16,13 @@ db-reset:
 backend:
 	cd backend && $(PYTHON) -m uvicorn main:app --reload
 
+frontend:
+	cd frontend && npm start
+
+eqwatch:
+	cd backend && $(PYTHON) -m uvicorn main:app --reload &
+	cd frontend && npm start
+
 install:
 	$(PYTHON) -m pip install -r backend/requirements.txt
 
@@ -31,6 +38,8 @@ help:
 	@echo "make db-down     — stop MySQL"
 	@echo "make db-reset    — wipe DB and restart fresh"
 	@echo "make backend     — start FastAPI (uvicorn --reload)"
+	@echo "make frontend    — start React dev server"
+	@echo "make eqwatch     — start backend and frontend together"
 	@echo "make install     — install Python deps ($(PYTHON) -m pip)"
 	@echo "make seed        — populate earthquake data from USGS"
 	@echo "make lint        — run ruff linter and formatter"

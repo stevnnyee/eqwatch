@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from routers import (
     users,
     earthquakes,
@@ -12,6 +13,13 @@ from routers import (
 # use python -m if using a virtual enviorment
 
 app = FastAPI(title="EQWatch API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(users.router, prefix="/users", tags=["users"])
 app.include_router(earthquakes.router, prefix="/earthquakes", tags=["earthquakes"])
