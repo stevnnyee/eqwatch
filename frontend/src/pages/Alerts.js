@@ -91,7 +91,7 @@ export default function Alerts() {
               <td className="px-4 py-2">{a.alert_id}</td>
               <td className="px-4 py-2">{a.user_id}</td>
               <td className="px-4 py-2">{a.eq_id}</td>
-              <td className="px-4 py-2">{new Date(a.sent_at).toLocaleString()}</td>
+              <td className="px-4 py-2">{new Date(a.sent_at + "Z").toLocaleString()}</td>
               <td className="px-4 py-2">
                 <button
                   onClick={() => handleDelete(a.alert_id)}

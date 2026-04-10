@@ -81,7 +81,7 @@ export default function Users() {
               <td className="px-4 py-2">{u.first_name}</td>
               <td className="px-4 py-2">{u.last_name}</td>
               <td className="px-4 py-2">{u.email}</td>
-              <td className="px-4 py-2">{new Date(u.created_at).toLocaleString()}</td>
+              <td className="px-4 py-2">{new Date(u.created_at + "Z").toLocaleString()}</td>
               <td className="px-4 py-2">
                 <button
                   onClick={() => handleDelete(u.user_id)}
