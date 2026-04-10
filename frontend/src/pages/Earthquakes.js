@@ -36,7 +36,7 @@ export default function Earthquakes() {
                 <td className="px-4 py-2">{eq.latitude}</td>
                 <td className="px-4 py-2">{eq.longitude}</td>
                 <td className="px-4 py-2">{eq.location_name}</td>
-                <td className="px-4 py-2">{new Date(eq.occurred_at).toLocaleString()}</td>
+                <td className="px-4 py-2">{new Date(eq.occurred_at + "Z").toLocaleString()}</td>
               </tr>
             ))}
           </tbody>
