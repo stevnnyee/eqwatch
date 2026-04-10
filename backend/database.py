@@ -4,7 +4,9 @@ import mysql.connector
 from contextlib import contextmanager
 from config import settings
 
-_QUERIES_PATH = os.path.join(os.path.dirname(__file__), "..", "database", "group16_queries.sql")
+_QUERIES_PATH = os.path.join(
+    os.path.dirname(__file__), "..", "database", "group16_queries.sql"
+)
 _queries: dict[str, str] = {}
 
 

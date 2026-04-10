@@ -36,6 +36,11 @@ def create_region(body):
                     status_code=422,
                     detail="Check constraint violated: ensure min_lat < max_lat and min_lon < max_lon",
                 )
+            if e.errno == 1264:
+                raise HTTPException(
+                    status_code=422,
+                    detail="Out of range value: lat must be -90 to 90, lon must be -180 to 180",
+                )
             raise
 
 
